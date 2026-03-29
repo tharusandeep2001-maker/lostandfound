@@ -15,6 +15,8 @@ const errorHandler   = require('./middleware/errorHandler');
 
 // ─── Connect to MongoDB ───────────────────────────────────────────────────────
 connectDB();
+const { initEmailListeners } = require('./services/emailNotificationService');
+initEmailListeners();
 
 // ─── App Setup ────────────────────────────────────────────────────────────────
 const app = express();
