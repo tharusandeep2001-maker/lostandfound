@@ -15,14 +15,14 @@ const router = Router();
 // GET /api/posts          — browse with filters, pagination, full-text search
 router.get('/', v.queryFilters, validate, ctrl.getPosts);
 
-// GET /api/posts/:id      — single post detail
-router.get('/:id', ctrl.getPostById);
-
-// ── Authenticated ─────────────────────────────────────────────────────────────
+// ── Authenticated (Or Specific) ─────────────────────────────────────────────────────────────
 
 // GET /api/posts/mine     — posts belonging to the current user
 // NOTE: must be defined BEFORE /:id so Express doesn't treat "mine" as an id
 router.get('/mine', auth, ctrl.getMyPosts);
+
+// GET /api/posts/:id      — single post detail
+router.get('/:id', ctrl.getPostById);
 
 // POST /api/posts         — create a new post
 router.post('/', auth, v.createPost, validate, ctrl.createPost);

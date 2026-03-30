@@ -5,15 +5,26 @@ import { useCreatePost } from '../hooks/postHooks';
 
 export default function PostCreatePage() {
   const navigate = useNavigate();
-  const { mutateAsync: createPostMutation, isPending } = useCreatePost();
+  const { mutateAsync: createPost, isPending } = useCreatePost();
 
   async function handleCreate(formData) {
+    const toastId = toast.loading('Submitting your report...');
     try {
-      const result = await createPostMutation(formData);
-      toast.success(`Post created! ${result.matchCount ?? 0} match(es) found.`);
+      const result = await createPost(formData);
+      toast.success(
+        `Report submitted! ${
+          result.matchCount > 0 
+            ? result.matchCount + ' match(es) found.' 
+            : 'We will notify you if a match is found.'
+        }`,
+        { id: toastId }
+      );
       navigate(`/posts/${result.post._id}`);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create post');
+      toast.error(
+        err.response?.data?.message || 'Failed to submit. Try again.',
+        { id: toastId }
+      );
     }
   }
 

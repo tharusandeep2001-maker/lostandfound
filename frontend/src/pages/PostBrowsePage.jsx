@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { Search, RefreshCw } from 'lucide-react';
 import PostCard from '../components/post/PostCard';
 import { CATEGORIES, ZONES } from '../utils/constants';
 import { usePosts } from '../hooks/postHooks';
@@ -15,39 +15,51 @@ export default function PostBrowsePage() {
   const currentQ = searchParams.get('q') || '';
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
 
+  const filters = {
+    type:     currentType || undefined,
+    category: currentCategory || undefined,
+    zone:     currentZone || undefined,
+    q:        currentQ || undefined,
+    page:     currentPage,
+    limit:    10
+  };
+
   // Debounced search term
-  const [searchTerm, setSearchTerm] = useState(currentQ);
+  const [inputQ, setInputQ] = useState(currentQ);
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      if (searchTerm !== currentQ) {
-        updateFilter('q', searchTerm);
-      }
+    const timer = setTimeout(() => {
+      setSearchParams(prev => {
+        if (inputQ) prev.set('q', inputQ);
+        else prev.delete('q');
+        
+        // Do not reset page if the query is practically the same
+        if (inputQ !== currentQ) prev.set('page', '1');
+        return prev;
+      });
     }, 400);
-    return () => clearTimeout(handler);
-  }, [searchTerm, currentQ]);
+    return () => clearTimeout(timer);
+  }, [inputQ, setSearchParams, currentQ]);
 
   const updateFilter = (key, value) => {
-    const newParams = new URLSearchParams(searchParams);
-    if (value) {
-      newParams.set(key, value);
-    } else {
-      newParams.delete(key);
-    }
-    // Reset to page 1 on any filter change
-    if (key !== 'page') newParams.delete('page');
-    setSearchParams(newParams);
+    setSearchParams(prev => {
+      if (value) prev.set(key, value);
+      else prev.delete(key);
+      if (key !== 'page') prev.set('page', '1');
+      return prev;
+    });
   };
 
   const clearAllFilters = () => {
     setSearchParams(new URLSearchParams());
-    setSearchTerm('');
+    setInputQ('');
   };
 
   const activeFilterCount = Array.from(searchParams.keys()).filter(k => k !== 'page').length;
 
-  const { data, isLoading } = usePosts(searchParams.toString());
-  const { posts = [], total = 0, pages = 1 } = data || {};
+  const { data, isLoading, isError, refetch } = usePosts(filters);
+  const posts = data?.posts ?? [];
+  const pages = data?.pages ?? 1;
 
   return (
     <div className="space-y-6">
@@ -96,8 +108,8 @@ export default function PostBrowsePage() {
             <input 
               type="text" 
               placeholder="Search keyword..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={inputQ}
+              onChange={(e) => setInputQ(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -140,6 +152,19 @@ export default function PostBrowsePage() {
         </div>
       </div>
 
+      {/* ERROR STATE */}
+      {isError && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-8 text-center">
+          <p className="text-red-800 font-medium mb-4">Failed to load posts. Please try again.</p>
+          <button 
+            onClick={() => refetch()}
+            className="inline-flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-lg font-medium hover:bg-red-200 transition"
+          >
+            <RefreshCw size={16} /> Retry
+          </button>
+        </div>
+      )}
+
       {/* POST GRID */}
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -147,7 +172,7 @@ export default function PostBrowsePage() {
             <div key={i} className="animate-pulse bg-gray-200 rounded-xl h-64"></div>
           ))}
         </div>
-      ) : posts.length === 0 ? (
+      ) : !isError && posts.length === 0 ? (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 text-center py-16">
            <p className="text-gray-500 text-lg font-medium">No items found.</p>
            <p className="text-gray-400 text-sm mt-1 mb-6">Try adjusting your filters or report a new item.</p>
@@ -164,7 +189,7 @@ export default function PostBrowsePage() {
       )}
 
       {/* PAGINATION */}
-      {pages > 1 && !isLoading && (
+      {pages > 1 && !isLoading && !isError && (
         <div className="flex justify-center items-center gap-4 mt-8">
           <button 
             disabled={currentPage <= 1}

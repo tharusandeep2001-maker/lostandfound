@@ -1,20 +1,59 @@
-// STUBS for Layer 8 — fulfilled in Layer 9
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import * as postService from '../services/postService';
 
-export const usePosts = (filters) => ({ data: { posts: [], total: 0, pages: 1 }, isLoading: false });
-export const usePost = (id) => ({ data: null, isLoading: false, isError: false });
-export const useMyPosts = () => ({ data: { posts: [] }, isLoading: false });
+export const usePosts = (filters) => {
+  return useQuery({
+    queryKey: ['posts', filters],
+    queryFn: () => postService.getPosts(filters),
+    staleTime: 1000 * 60 * 2,     // 2 minutes
+    placeholderData: (prev) => prev
+  });
+};
 
-export const useCreatePost = () => ({ 
-  mutateAsync: async () => ({ post: { _id: 'stub_id' }, matchCount: 0 }), 
-  isPending: false 
-});
+export const usePost = (id) => {
+  return useQuery({
+    queryKey: ['posts', id],
+    queryFn: () => postService.getPostById(id),
+    enabled: !!id,
+    staleTime: 1000 * 60 * 5      // 5 minutes
+  });
+};
 
-export const useUpdatePost = () => ({ 
-  mutateAsync: async () => ({}), 
-  isPending: false 
-});
+export const useMyPosts = () => {
+  return useQuery({
+    queryKey: ['posts', 'mine'],
+    queryFn: postService.getMyPosts,
+    staleTime: 1000 * 60 * 2
+  });
+};
 
-export const useDeletePost = () => ({ 
-  mutateAsync: async () => ({}), 
-  isPending: false 
-});
+export const useCreatePost = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: postService.createPost,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['posts'] });
+    }
+  });
+};
+
+export const useUpdatePost = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: postService.updatePost,
+    onSuccess: (_, variables) => {
+      qc.invalidateQueries({ queryKey: ['posts', variables.id] });
+      qc.invalidateQueries({ queryKey: ['posts'] });
+    }
+  });
+};
+
+export const useDeletePost = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: postService.deletePost,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['posts'] });
+    }
+  });
+};

@@ -9,10 +9,9 @@ export default function MyPostsPage() {
   const { data, isLoading } = useMyPosts();
   const posts = data?.posts || [];
 
-  // Filter logic aligned with business constraints
   const filteredPosts = posts.filter(post => {
-    if (activeTab === 'Active') return post.status === 'open' || post.status === 'matched';
-    if (activeTab === 'Resolved') return post.status === 'resolved';
+    if (activeTab === 'Active') return !post.isDeleted && ['open', 'matched'].includes(post.status);
+    if (activeTab === 'Resolved') return !post.isDeleted && post.status === 'resolved';
     if (activeTab === 'Removed') return post.isDeleted === true;
     return false;
   });
