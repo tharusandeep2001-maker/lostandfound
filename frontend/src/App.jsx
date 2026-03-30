@@ -1,47 +1,74 @@
-import { useState, useEffect } from 'react'
-import ImageUploader from './components/post/ImageUploader'
-import './App.css'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
-function App() {
-  const [uploadedUrls, setUploadedUrls] = useState([])
+// Contexts & Layout
+import { AuthProvider } from './contexts/AuthContext';
+import Navbar from './components/layout/Navbar';
+import ProtectedRoute from './components/layout/ProtectedRoute';
 
-  useEffect(() => {
-    console.log('--- Cloudinary Environment Check ---');
-    console.log('Cloud Name:', import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-    console.log('Upload Preset:', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
-  }, []);
+// Pages
+import PostBrowsePage from './pages/PostBrowsePage';
+import PostCreatePage from './pages/PostCreatePage';
+import PostDetailPage from './pages/PostDetailPage';
+import PostEditPage from './pages/PostEditPage';
+import MyPostsPage from './pages/MyPostsPage';
+import LoginPage from './pages/LoginPage';
+import NotFoundPage from './pages/NotFoundPage';
 
+// Initialize React Query client with 2-minute stale time
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 2 * 60 * 1000, // 2 minutes
+    },
+  },
+});
+
+// Layout wrapper applied to all routes
+function AppLayout() {
   return (
-    <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
-      <h1 className="text-2xl font-bold mb-6">Cloudinary Upload Test</h1>
-      
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-        <h2 className="text-lg font-semibold mb-4">Image Uploader Component</h2>
-        <ImageUploader 
-          existingUrls={[]} 
-          onChange={(urls) => {
-            console.log('Uploaded URLs:', urls);
-            setUploadedUrls(urls);
-          }} 
-        />
-      </div>
-
-      {uploadedUrls.length > 0 && (
-        <div className="mt-8">
-          <h3 className="font-semibold mb-2">Uploaded Cloudinary URLs:</h3>
-          <ul className="list-disc pl-5 space-y-1">
-            {uploadedUrls.map((url, i) => (
-              <li key={i}>
-                <a href={url} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
-                  {url}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        <Outlet />
+      </main>
     </div>
-  )
+  );
 }
 
-export default App
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <BrowserRouter>
+          <Toaster position="top-right" />
+          <Routes>
+            {/* All routes are wrapped in AppLayout which includes the Navbar */}
+            <Route element={<AppLayout />}>
+              
+              {/* Public Routes */}
+              <Route path="/" element={<Navigate to="/posts" replace />} />
+              <Route path="/posts" element={<PostBrowsePage />} />
+              <Route path="/posts/:id" element={<PostDetailPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              
+              {/* Authenticated Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/posts/new" element={<PostCreatePage />} />
+                <Route path="/posts/:id/edit" element={<PostEditPage />} />
+                <Route path="/my-posts" element={<MyPostsPage />} />
+              </Route>
+              
+              {/* 404 Catch-All */}
+              <Route path="*" element={<NotFoundPage />} />
+
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+}
+
+export default App;
