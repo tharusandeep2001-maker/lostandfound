@@ -49,28 +49,44 @@ export default function PostForm({ onSubmit, defaultValues, isSubmitting, mode =
       {/* 1. Post Type Radio Cards */}
       <div>
         <label className={labelClass}>Type of Report</label>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <label 
-            className={`border-2 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+            className={`flex-1 border-2 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors ${
               watchedType === 'lost' ? 'border-red-500 bg-red-50 text-red-700' : 'border-gray-200 hover:border-red-200 bg-white'
             }`}
           >
-             <input data-testid="type-lost" type="radio" value="lost" {...register('type')} className="sr-only" />
+             <input 
+               data-testid="type-lost" 
+               type="radio" 
+               value="lost" 
+               {...register('type')} 
+               className="sr-only"
+               aria-invalid={!!errors.type}
+               aria-describedby={errors.type ? "type-error" : undefined}
+             />
              <SearchX className={`w-8 h-8 mb-2 ${watchedType === 'lost' ? 'text-red-600' : 'text-gray-400'}`} />
              <span className="font-medium">I Lost Something</span>
           </label>
           
           <label 
-             className={`border-2 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+             className={`flex-1 border-2 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors ${
                watchedType === 'found' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 hover:border-blue-200 bg-white'
              }`}
           >
-             <input data-testid="type-found" type="radio" value="found" {...register('type')} className="sr-only" />
+             <input 
+               data-testid="type-found" 
+               type="radio" 
+               value="found" 
+               {...register('type')} 
+               className="sr-only"
+               aria-invalid={!!errors.type}
+               aria-describedby={errors.type ? "type-error" : undefined}
+             />
              <Search className={`w-8 h-8 mb-2 ${watchedType === 'found' ? 'text-blue-600' : 'text-gray-400'}`} />
              <span className="font-medium">I Found Something</span>
           </label>
         </div>
-        {errors.type && <p className={errorClass}>{errors.type.message}</p>}
+        {errors.type && <p id="type-error" role="alert" className={errorClass}>{errors.type.message}</p>}
       </div>
 
       {/* 2. Title */}
@@ -83,32 +99,50 @@ export default function PostForm({ onSubmit, defaultValues, isSubmitting, mode =
           {...register('title')} 
           placeholder="e.g. Black Sony earphones" 
           className={inputClass}
+          aria-invalid={!!errors.title}
+          aria-describedby={errors.title ? "title-error" : undefined}
         />
         <div className="flex justify-between items-start mt-1">
-          <p className={errorClass}>{errors.title?.message}</p>
-          <span className="text-xs text-gray-400 ml-auto">{watchedTitle?.length || 0}/120</span>
+          {errors.title ? (
+            <p id="title-error" role="alert" className={errorClass}>{errors.title.message}</p>
+          ) : <div />}
+          <span className="text-xs text-gray-400 ml-auto pt-1">{watchedTitle?.length || 0}/120</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* 3. Category */}
         <div>
           <label className={labelClass} htmlFor="category">Category</label>
-          <select data-testid="category-select" id="category" {...register('category')} className={inputClass}>
+          <select 
+            data-testid="category-select" 
+            id="category" 
+            {...register('category')} 
+            className={inputClass}
+            aria-invalid={!!errors.category}
+            aria-describedby={errors.category ? "category-error" : undefined}
+          >
             <option value="">Select a category...</option>
             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
-          {errors.category && <p className={errorClass}>{errors.category.message}</p>}
+          {errors.category && <p id="category-error" role="alert" className={errorClass}>{errors.category.message}</p>}
         </div>
 
         {/* 4. Zone */}
         <div>
           <label className={labelClass} htmlFor="zone">Campus Zone</label>
-          <select data-testid="zone-select" id="zone" {...register('zone')} className={inputClass}>
+          <select 
+            data-testid="zone-select" 
+            id="zone" 
+            {...register('zone')} 
+            className={inputClass}
+            aria-invalid={!!errors.zone}
+            aria-describedby={errors.zone ? "zone-error" : undefined}
+          >
             <option value="">Select a zone...</option>
             {ZONES.map(z => <option key={z} value={z}>{z}</option>)}
           </select>
-          {errors.zone && <p className={errorClass}>{errors.zone.message}</p>}
+          {errors.zone && <p id="zone-error" role="alert" className={errorClass}>{errors.zone.message}</p>}
         </div>
       </div>
 
@@ -122,8 +156,10 @@ export default function PostForm({ onSubmit, defaultValues, isSubmitting, mode =
           {...register('incidentDate')}
           max={new Date().toISOString().split('T')[0]}
           className={inputClass}
+          aria-invalid={!!errors.incidentDate}
+          aria-describedby={errors.incidentDate ? "incidentDate-error" : undefined}
         />
-        {errors.incidentDate && <p className={errorClass}>{errors.incidentDate.message}</p>}
+        {errors.incidentDate && <p id="incidentDate-error" role="alert" className={errorClass}>{errors.incidentDate.message}</p>}
       </div>
 
       {/* 6. Description */}
@@ -136,20 +172,26 @@ export default function PostForm({ onSubmit, defaultValues, isSubmitting, mode =
           {...register('description')} 
           placeholder="Provide any identifying marks, serial numbers, or specific locations..."
           className={inputClass}
+          aria-invalid={!!errors.description}
+          aria-describedby={errors.description ? "description-error" : undefined}
         />
         <div className="flex justify-between items-start mt-1">
-          <p className={errorClass}>{errors.description?.message}</p>
-          <span className="text-xs text-gray-400 ml-auto">{watchedDesc?.length || 0}/1000</span>
+          {errors.description ? (
+            <p id="description-error" role="alert" className={errorClass}>{errors.description.message}</p>
+          ) : <div />}
+          <span className="text-xs text-gray-400 ml-auto pt-1">{watchedDesc?.length || 0}/1000</span>
         </div>
       </div>
 
       {/* 7. Images */}
       <div>
         <label className={labelClass}>Images (Optional)</label>
-        <ImageUploader 
-          existingUrls={imageUrls}
-          onChange={setImageUrls} 
-        />
+        <div aria-label="Image uploader area">
+          <ImageUploader 
+            existingUrls={imageUrls}
+            onChange={setImageUrls} 
+          />
+        </div>
       </div>
 
       {/* 8. Submit button */}

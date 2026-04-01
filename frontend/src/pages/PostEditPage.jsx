@@ -1,6 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { usePost, useUpdatePost } from '../hooks/postHooks';
 import PostForm from '../components/post/PostForm';
+import PageHeader from '../components/layout/PageHeader';
 import toast from 'react-hot-toast';
 
 export default function PostEditPage() {
@@ -25,7 +26,7 @@ export default function PostEditPage() {
     return (
       <div className="text-center py-20 bg-gray-50 rounded-xl mt-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Post not found</h2>
-        <Link to="/posts" className="text-blue-600 hover:underline">← Back to Browse</Link>
+        <Link to="/posts" className="text-blue-600 hover:underline">&larr; Back to Browse</Link>
       </div>
     );
   }
@@ -42,13 +43,14 @@ export default function PostEditPage() {
 
   return (
     <div className="max-w-2xl mx-auto py-8">
-      <div className="mb-6">
-        <Link to={`/posts/${id}`} className="text-blue-600 hover:text-blue-800 text-sm mb-4 inline-block font-medium">
-          ← Back to Post Details
-        </Link>
-        <h1 className="text-3xl font-bold text-gray-900">Edit Post</h1>
-        <p className="text-gray-500 mt-2">Update the details of your recovered or lost item.</p>
-      </div>
+      <Link to={`/posts/${id}`} className="text-blue-600 hover:text-blue-800 text-sm mb-4 inline-block font-medium">
+        &larr; Back to Post Details
+      </Link>
+      
+      <PageHeader 
+        title="Edit Post"
+        subtitle="Update the details of your recovered or lost item."
+      />
       
       <div className="bg-white p-6 shadow-sm border border-gray-100 rounded-xl">
         <PostForm mode="edit" defaultValues={post} onSubmit={handleEdit} isSubmitting={isPending} />

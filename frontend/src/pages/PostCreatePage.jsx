@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import PostForm from '../components/post/PostForm';
+import PageHeader from '../components/layout/PageHeader';
 import { useCreatePost } from '../hooks/postHooks';
 
 export default function PostCreatePage() {
@@ -30,10 +31,10 @@ export default function PostCreatePage() {
 
   return (
     <div className="max-w-2xl mx-auto py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Report a Lost or Found Item</h1>
-        <p className="text-gray-500 mt-2">Fill in the details to help others identify your item</p>
-      </div>
+      <PageHeader 
+        title="Report a Lost or Found Item"
+        subtitle="Fill in the details to help others identify your item"
+      />
       
       <div className="bg-white p-6 shadow-sm border border-gray-100 rounded-xl">
         <PostForm mode="create" onSubmit={handleCreate} isSubmitting={isPending} />

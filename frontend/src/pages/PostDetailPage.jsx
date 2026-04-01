@@ -7,6 +7,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { usePost, useDeletePost } from '../hooks/postHooks';
 import PostStatusBadge from '../components/post/PostStatusBadge';
 import MatchSuggestionsPanel from '../components/match/MatchSuggestionsPanel';
+import ConfirmModal from '../components/ui/ConfirmModal';
+import { SkeletonDetail } from '../components/ui/Skeleton';
 import { TYPE_COLORS } from '../utils/constants';
 
 export default function PostDetailPage() {
@@ -22,18 +24,8 @@ export default function PostDetailPage() {
   // LOADING STATE
   if (isLoading) {
     return (
-      <div className="animate-pulse space-y-8 max-w-6xl mx-auto">
-        <div className="h-4 w-24 bg-gray-200 rounded"></div>
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-4">
-            <div className="h-72 bg-gray-200 rounded-xl w-full"></div>
-            <div className="h-8 w-3/4 bg-gray-200 rounded"></div>
-            <div className="h-24 bg-gray-200 rounded w-full"></div>
-          </div>
-          <div className="lg:col-span-1">
-            <div className="h-64 bg-gray-200 rounded-xl w-full"></div>
-          </div>
-        </div>
+      <div className="max-w-6xl mx-auto space-y-6">
+        <SkeletonDetail />
       </div>
     );
   }
@@ -44,7 +36,7 @@ export default function PostDetailPage() {
       <div className="text-center py-20">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">This post no longer exists.</h2>
         <Link to="/posts" className="text-blue-600 font-medium hover:underline inline-flex items-center mt-2">
-          ← Back to Browse
+          &larr; Back to Browse
         </Link>
       </div>
     );
@@ -77,16 +69,16 @@ export default function PostDetailPage() {
         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Browse
       </Link>
       
-      <div className="lg:grid lg:grid-cols-3 lg:gap-8 items-start">
+      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-8 items-start">
         
         {/* LEFT COLUMN */}
-        <div className="lg:col-span-2 w-full">
+        <div className="lg:col-span-2 w-full order-1">
            {/* Image Gallery */}
            <div className="mb-6">
              {post.imageUrls && post.imageUrls.length > 0 ? (
-               <img src={post.imageUrls[0]} alt="Post Cover" className="w-full h-72 md:h-96 object-cover rounded-xl shadow-sm border border-gray-100" />
+               <img src={post.imageUrls[0]} alt="Post Cover" className="w-full h-56 md:h-72 object-cover rounded-xl shadow-sm border border-gray-100" />
              ) : (
-               <div className="w-full h-72 md:h-96 bg-gray-100 rounded-xl flex items-center justify-center border border-gray-200">
+               <div className="w-full h-56 md:h-72 bg-gray-100 rounded-xl flex items-center justify-center border border-gray-200">
                  <Camera className="w-16 h-16 text-gray-300" />
                </div>
              )}
@@ -120,18 +112,18 @@ export default function PostDetailPage() {
 
            {/* Owner Actions */}
            {isOwner && post.status !== 'resolved' && (
-             <div className="mt-10 pt-6 border-t border-gray-100 flex items-center gap-3">
+             <div className="mt-10 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center gap-3">
                <Link 
                  data-testid="edit-button"
                  to={`/posts/${id}/edit`} 
-                 className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition"
+                 className="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition w-full sm:w-auto"
                >
                  <Edit2 className="w-4 h-4 mr-2" /> Edit Details
                </Link>
                <button 
                  data-testid="delete-button"
                  onClick={() => setShowDeleteModal(true)}
-                 className="inline-flex items-center px-4 py-2 border border-red-200 rounded-lg text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 transition"
+                 className="inline-flex justify-center items-center px-4 py-2 border border-red-200 rounded-lg text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 transition w-full sm:w-auto"
                >
                  <Trash2 className="w-4 h-4 mr-2" /> Remove Post
                </button>
@@ -140,7 +132,7 @@ export default function PostDetailPage() {
         </div>
 
         {/* RIGHT COLUMN */}
-        <div className="lg:col-span-1 mt-8 lg:mt-0 w-full">
+        <div className="lg:col-span-1 mt-8 lg:mt-0 w-full order-3 lg:order-2">
           <div className="lg:sticky lg:top-24 space-y-6">
             
             {/* Metadata Card */}
@@ -168,46 +160,40 @@ export default function PostDetailPage() {
                 </div>
               )}
             </div>
+            
+            {/* Desktop Match Panel */}
+            <div className="hidden lg:block">
+              {(isOwner || isAdmin) && (
+                 <div data-testid="match-panel">
+                   <MatchSuggestionsPanel postId={id} />
+                 </div>
+              )}
+            </div>
 
-            {/* Match Panel via props routing */}
+          </div>
+        </div>
+        
+        <div className="w-full order-2 lg:hidden">
             {(isOwner || isAdmin) && (
                <div data-testid="match-panel">
                  <MatchSuggestionsPanel postId={id} />
                </div>
             )}
-
-          </div>
         </div>
 
       </div>
 
-      {/* Delete Modal Overlay */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-all">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm border border-gray-100 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Remove permanently?</h3>
-            <p className="text-sm text-gray-500 mb-8 leading-relaxed">
-              Are you sure you want to remove this post? It will no longer appear in searches or match results. This action cannot be undone.
-            </p>
-            <div className="flex gap-3 justify-end">
-              <button 
-                onClick={() => setShowDeleteModal(false)}
-                className="px-5 py-2.5 rounded-lg text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
-              >
-                Cancel
-              </button>
-              <button 
-                data-testid="delete-confirm"
-                onClick={handleDeleteCallback}
-                disabled={isDeleting}
-                className="px-5 py-2.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-50 flex items-center transition shadow-sm"
-              >
-                {isDeleting ? 'Removing...' : 'Yes, Remove'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        title="Remove permanently?"
+        message="Are you sure you want to remove this post? It will no longer appear in searches or match results. This action cannot be undone."
+        confirmLabel="Yes, Remove"
+        confirmClassName="bg-red-600 hover:bg-red-700 text-white"
+        confirmTestId="delete-confirm"
+        onConfirm={handleDeleteCallback}
+        onCancel={() => setShowDeleteModal(false)}
+        isLoading={isDeleting}
+      />
 
     </div>
   );

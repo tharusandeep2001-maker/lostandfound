@@ -53,12 +53,15 @@ export default function MatchCard({ postId, matchedPostId, score, breakdown, mat
       </div>
 
       <div className="self-end ml-auto mt-4 sm:absolute sm:bottom-4 sm:right-4 sm:mt-0">
-        <Link 
-          to={`/claims/new?postId=${postId}&matchId=${matchedPostId}`}
+        <button 
+          onClick={(e) => {
+            e.preventDefault();
+            import('react-hot-toast').then(toast => toast.default('Claims Module is currently under active development. Keep an eye out for our upcoming Week 11 integration update!', { icon: '🚧' }));
+          }}
           className="text-sm bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 transition inline-block whitespace-nowrap"
         >
           Submit Claim →
-        </Link>
+        </button>
       </div>
     </div>
   );
