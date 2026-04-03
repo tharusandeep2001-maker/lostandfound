@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/layout/Navbar';
 import ProtectedRoute from './components/layout/ProtectedRoute';
+import AdminRoute from './components/layout/AdminRoute';
 
 // Pages
 import PostBrowsePage from './pages/PostBrowsePage';
@@ -17,6 +18,9 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
+import AdminUsersPage from './pages/AdminUsersPage';
+import AdminPostsPage from './pages/AdminPostsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 const queryClient = new QueryClient({
@@ -56,11 +60,18 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
-              {/* Authenticated Routes */}
+              {/* Student Authenticated Routes */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/posts/new" element={<PostCreatePage />} />
                 <Route path="/posts/:id/edit" element={<PostEditPage />} />
                 <Route path="/my-posts" element={<MyPostsPage />} />
+              </Route>
+
+              {/* Admin Only Routes */}
+              <Route element={<AdminRoute />}>
+                <Route path="/admin" element={<AdminDashboardPage />} />
+                <Route path="/admin/users" element={<AdminUsersPage />} />
+                <Route path="/admin/posts" element={<AdminPostsPage />} />
               </Route>
 
               {/* 404 */}
