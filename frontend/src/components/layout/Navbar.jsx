@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
+
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -49,6 +50,9 @@ export default function Navbar() {
                   </Link>
                   <Link to="/my-posts" className="text-gray-600 hover:text-indigo-600 font-medium transition">
                     My Posts
+                  </Link>
+                  <Link to="/my-claims" className="text-gray-600 hover:text-indigo-600 font-medium transition">
+                    My Claims
                   </Link>
                 </>
               )}

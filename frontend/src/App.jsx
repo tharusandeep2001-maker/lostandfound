@@ -22,6 +22,8 @@ import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminPostsPage from './pages/AdminPostsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import MyClaimsPage from './pages/MyClaimsPage';
+import AdminClaimsPage from './pages/AdminClaimsPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,6 +67,7 @@ function App() {
                 <Route path="/posts/new" element={<PostCreatePage />} />
                 <Route path="/posts/:id/edit" element={<PostEditPage />} />
                 <Route path="/my-posts" element={<MyPostsPage />} />
+                <Route path="/my-claims" element={<MyClaimsPage />} />
               </Route>
 
               {/* Admin Only Routes */}
@@ -72,6 +75,7 @@ function App() {
                 <Route path="/admin" element={<AdminDashboardPage />} />
                 <Route path="/admin/users" element={<AdminUsersPage />} />
                 <Route path="/admin/posts" element={<AdminPostsPage />} />
+                <Route path="/admin/claims" element={<AdminClaimsPage />} />
               </Route>
 
               {/* 404 */}

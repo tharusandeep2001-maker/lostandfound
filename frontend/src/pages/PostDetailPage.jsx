@@ -10,6 +10,7 @@ import MatchSuggestionsPanel from '../components/match/MatchSuggestionsPanel';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import { SkeletonDetail } from '../components/ui/Skeleton';
 import { TYPE_COLORS } from '../utils/constants';
+import { submitClaim } from '../services/claimService';
 
 export default function PostDetailPage() {
   const { id } = useParams();
@@ -20,8 +21,11 @@ export default function PostDetailPage() {
   const { mutateAsync: deletePost, isPending: isDeleting } = useDeletePost();
   
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showClaimModal, setShowClaimModal] = useState(false);
+  const [claimDetail, setClaimDetail] = useState('');
+  const [claimLoading, setClaimLoading] = useState(false);
+  const [claimSubmitted, setClaimSubmitted] = useState(false);
 
-  // LOADING STATE
   if (isLoading) {
     return (
       <div className="max-w-6xl mx-auto space-y-6">
@@ -30,7 +34,6 @@ export default function PostDetailPage() {
     );
   }
 
-  // NOT FOUND STATE
   if (isError || !post) {
     return (
       <div className="text-center py-20">
@@ -42,8 +45,11 @@ export default function PostDetailPage() {
     );
   }
 
-  const isOwner = post.authorId === user?._id;
+  const userId = user?.id || user?._id;
+  const isOwner = post.authorId === userId;
   const isAdmin = user?.role === 'admin';
+  const isStudent = user && !isAdmin;
+  const canClaim = isStudent && !isOwner && post.status !== 'resolved';
 
   const formattedDate = new Date(post.incidentDate).toLocaleDateString('en-GB', {
     day: 'numeric', month: 'long', year: 'numeric'
@@ -58,8 +64,28 @@ export default function PostDetailPage() {
       await deletePost(id);
       toast.success('Post removed successfully');
       navigate('/posts');
-    } catch (err) {
+    } catch {
       toast.error('Failed to remove post');
+    }
+  };
+
+  const handleClaimSubmit = async (e) => {
+    e.preventDefault();
+    if (claimDetail.trim().length < 10) {
+      toast.error('Please provide more detail (minimum 10 characters)');
+      return;
+    }
+    setClaimLoading(true);
+    try {
+      await submitClaim(id, claimDetail.trim());
+      setClaimSubmitted(true);
+      setShowClaimModal(false);
+      toast.success('Claim submitted! Admin will review and contact you.');
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Failed to submit claim';
+      toast.error(msg);
+    } finally {
+      setClaimLoading(false);
     }
   };
 
@@ -73,62 +99,89 @@ export default function PostDetailPage() {
         
         {/* LEFT COLUMN */}
         <div className="lg:col-span-2 w-full order-1">
-           {/* Image Gallery */}
-           <div className="mb-6">
-             {post.imageUrls && post.imageUrls.length > 0 ? (
-               <img src={post.imageUrls[0]} alt="Post Cover" className="w-full h-56 md:h-72 object-cover rounded-xl shadow-sm border border-gray-100" />
-             ) : (
-               <div className="w-full h-56 md:h-72 bg-gray-100 rounded-xl flex items-center justify-center border border-gray-200">
-                 <Camera className="w-16 h-16 text-gray-300" />
-               </div>
-             )}
-           </div>
+          {/* Image Gallery */}
+          <div className="mb-6">
+            {post.imageUrls && post.imageUrls.length > 0 ? (
+              <img src={post.imageUrls[0]} alt="Post Cover" className="w-full h-56 md:h-72 object-cover rounded-xl shadow-sm border border-gray-100" />
+            ) : (
+              <div className="w-full h-56 md:h-72 bg-gray-100 rounded-xl flex items-center justify-center border border-gray-200">
+                <Camera className="w-16 h-16 text-gray-300" />
+              </div>
+            )}
+          </div>
 
-           {/* Post Header */}
-           <div className="flex items-center gap-3 mb-3">
-             <span className={`px-2.5 py-1 text-xs font-bold uppercase tracking-wide rounded-md capitalize ${TYPE_COLORS[post.type] || 'bg-gray-100 text-gray-800'}`}>
-               {post.type}
-             </span>
-             <span data-testid="post-status">
-               <PostStatusBadge status={post.status} size="md" />
-             </span>
-           </div>
-           
-           <h1 data-testid="post-title" className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight">{post.title}</h1>
-           
-           <div className="flex flex-wrap items-center gap-5 text-sm font-medium text-gray-600 border-b border-gray-100 pb-6">
-             <div className="flex items-center gap-2"><Tag size={16} className="text-gray-400"/> <span>{post.category}</span></div>
-             <div className="flex items-center gap-2"><MapPin size={16} className="text-gray-400"/> <span>{post.zone}</span></div>
-             <div className="flex items-center gap-2"><Calendar size={16} className="text-gray-400"/> <span>{formattedDate}</span></div>
-           </div>
+          {/* Post Header */}
+          <div className="flex items-center gap-3 mb-3">
+            <span className={`px-2.5 py-1 text-xs font-bold uppercase tracking-wide rounded-md capitalize ${TYPE_COLORS[post.type] || 'bg-gray-100 text-gray-800'}`}>
+              {post.type}
+            </span>
+            <span data-testid="post-status">
+              <PostStatusBadge status={post.status} size="md" />
+            </span>
+          </div>
+          
+          <h1 data-testid="post-title" className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight">{post.title}</h1>
+          
+          <div className="flex flex-wrap items-center gap-5 text-sm font-medium text-gray-600 border-b border-gray-100 pb-6">
+            <div className="flex items-center gap-2"><Tag size={16} className="text-gray-400"/> <span>{post.category}</span></div>
+            <div className="flex items-center gap-2"><MapPin size={16} className="text-gray-400"/> <span>{post.zone}</span></div>
+            <div className="flex items-center gap-2"><Calendar size={16} className="text-gray-400"/> <span>{formattedDate}</span></div>
+          </div>
 
-           {/* Description */}
-           <div className="pt-6">
-             <h2 className="text-lg font-semibold text-gray-900 mb-3">Description</h2>
-             <p className="text-gray-700 whitespace-pre-wrap leading-relaxed text-[15px]">
-               {post.description}
-             </p>
-           </div>
+          {/* Description */}
+          <div className="pt-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">Description</h2>
+            <p className="text-gray-700 whitespace-pre-wrap leading-relaxed text-[15px]">
+              {post.description}
+            </p>
+          </div>
 
-           {/* Owner Actions */}
-           {isOwner && post.status !== 'resolved' && (
-             <div className="mt-10 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center gap-3">
-               <Link 
-                 data-testid="edit-button"
-                 to={`/posts/${id}/edit`} 
-                 className="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition w-full sm:w-auto"
-               >
-                 <Edit2 className="w-4 h-4 mr-2" /> Edit Details
-               </Link>
-               <button 
-                 data-testid="delete-button"
-                 onClick={() => setShowDeleteModal(true)}
-                 className="inline-flex justify-center items-center px-4 py-2 border border-red-200 rounded-lg text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 transition w-full sm:w-auto"
-               >
-                 <Trash2 className="w-4 h-4 mr-2" /> Remove Post
-               </button>
-             </div>
-           )}
+          {/* Claim Button — for students who don't own this post */}
+          {canClaim && (
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              {claimSubmitted ? (
+                <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-green-800 text-sm font-medium">
+                  ✅ Your claim has been submitted. Admin will review and contact you via email.
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowClaimModal(true)}
+                  className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition"
+                >
+                  Claim This Item
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Not logged in prompt */}
+          {!user && post.status !== 'resolved' && (
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <p className="text-gray-600 text-sm">
+                <Link to="/login" className="text-indigo-600 font-medium hover:underline">Login</Link> to claim this item.
+              </p>
+            </div>
+          )}
+
+          {/* Owner Actions */}
+          {isOwner && post.status !== 'resolved' && (
+            <div className="mt-10 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center gap-3">
+              <Link 
+                data-testid="edit-button"
+                to={`/posts/${id}/edit`} 
+                className="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition w-full sm:w-auto"
+              >
+                <Edit2 className="w-4 h-4 mr-2" /> Edit Details
+              </Link>
+              <button 
+                data-testid="delete-button"
+                onClick={() => setShowDeleteModal(true)}
+                className="inline-flex justify-center items-center px-4 py-2 border border-red-200 rounded-lg text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 transition w-full sm:w-auto"
+              >
+                <Trash2 className="w-4 h-4 mr-2" /> Remove Post
+              </button>
+            </div>
+          )}
         </div>
 
         {/* RIGHT COLUMN */}
@@ -164,9 +217,9 @@ export default function PostDetailPage() {
             {/* Desktop Match Panel */}
             <div className="hidden lg:block">
               {(isOwner || isAdmin) && (
-                 <div data-testid="match-panel">
-                   <MatchSuggestionsPanel postId={id} />
-                 </div>
+                <div data-testid="match-panel">
+                  <MatchSuggestionsPanel postId={id} />
+                </div>
               )}
             </div>
 
@@ -174,15 +227,16 @@ export default function PostDetailPage() {
         </div>
         
         <div className="w-full order-2 lg:hidden">
-            {(isOwner || isAdmin) && (
-               <div data-testid="match-panel">
-                 <MatchSuggestionsPanel postId={id} />
-               </div>
-            )}
+          {(isOwner || isAdmin) && (
+            <div data-testid="match-panel">
+              <MatchSuggestionsPanel postId={id} />
+            </div>
+          )}
         </div>
 
       </div>
 
+      {/* Delete Modal */}
       <ConfirmModal
         isOpen={showDeleteModal}
         title="Remove permanently?"
@@ -194,6 +248,51 @@ export default function PostDetailPage() {
         onCancel={() => setShowDeleteModal(false)}
         isLoading={isDeleting}
       />
+
+      {/* Claim Modal */}
+      {showClaimModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Claim This Item</h2>
+            <p className="text-gray-500 text-sm mb-6">
+              Provide a private identifying detail about this item to verify your claim. 
+              This will only be visible to the admin.
+            </p>
+            <form onSubmit={handleClaimSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Identifying Detail <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={claimDetail}
+                  onChange={(e) => setClaimDetail(e.target.value)}
+                  rows={4}
+                  required
+                  placeholder="e.g. The watch has a scratch on the left side of the strap, and my initials R.S. are engraved on the back..."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm resize-none"
+                />
+                <p className="text-xs text-gray-400 mt-1">{claimDetail.length}/500 characters (min 10)</p>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowClaimModal(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={claimLoading || claimDetail.trim().length < 10}
+                  className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition disabled:opacity-50"
+                >
+                  {claimLoading ? 'Submitting...' : 'Submit Claim'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

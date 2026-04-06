@@ -20,6 +20,14 @@ export default function AdminDashboardPage() {
       link: '/admin/posts',
       color: 'bg-green-500',
     },
+
+    {
+    title: 'Manage Claims',
+    description: 'Review pending claims, approve or reject with email notification.',
+    icon: ShieldCheck,
+    link: '/admin/claims',
+    color: 'bg-purple-500',
+    },
   ];
 
   return (
