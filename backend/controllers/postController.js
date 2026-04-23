@@ -208,6 +208,12 @@ const updateStatus = async (req, res) => {
   }
 
   post.status = target;
+
+  // Stamp transition timestamps for the status timeline
+  const now = new Date();
+  if (target === 'matched')  post.lastMatchedAt = now;
+  if (target === 'resolved') post.resolvedAt    = now;
+
   await post.save();
 
   return res.status(200).json(post);

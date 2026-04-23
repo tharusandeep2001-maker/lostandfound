@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
 import { usePost, useDeletePost } from '../hooks/postHooks';
 import PostStatusBadge from '../components/post/PostStatusBadge';
+import ItemStatusTimeline from '../components/post/ItemStatusTimeline';
 import MatchSuggestionsPanel from '../components/match/MatchSuggestionsPanel';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import { SkeletonDetail } from '../components/ui/Skeleton';
@@ -16,10 +17,10 @@ export default function PostDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  
+
   const { data: post, isLoading, isError } = usePost(id);
   const { mutateAsync: deletePost, isPending: isDeleting } = useDeletePost();
-  
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [claimDetail, setClaimDetail] = useState('');
@@ -37,8 +38,8 @@ export default function PostDetailPage() {
   if (isError || !post) {
     return (
       <div className="text-center py-20">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">This post no longer exists.</h2>
-        <Link to="/posts" className="text-blue-600 font-medium hover:underline inline-flex items-center mt-2">
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">This post no longer exists.</h2>
+        <Link to="/posts" className="text-indigo-600 font-medium hover:underline inline-flex items-center mt-2">
           &larr; Back to Browse
         </Link>
       </div>
@@ -51,17 +52,14 @@ export default function PostDetailPage() {
   const isStudent = user && !isAdmin;
   const canClaim = isStudent && !isOwner && post.status !== 'resolved';
 
-  // button text depends on post type
-  // lost post = someone lost it = finder clicks "I Found This Item"
-  // found post = someone found it = owner clicks "Claim This Item"
   const claimButtonText = post.type === 'lost' ? 'I Found This Item' : 'Claim This Item';
 
   const formattedDate = new Date(post.incidentDate).toLocaleDateString('en-GB', {
-    day: 'numeric', month: 'long', year: 'numeric'
+    day: 'numeric', month: 'long', year: 'numeric',
   });
 
   const formattedCreated = new Date(post.createdAt || Date.now()).toLocaleDateString('en-GB', {
-    day: 'numeric', month: 'short', year: 'numeric'
+    day: 'numeric', month: 'short', year: 'numeric',
   });
 
   const handleDeleteCallback = async () => {
@@ -96,76 +94,94 @@ export default function PostDetailPage() {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
-      <Link to="/posts" className="inline-flex items-center text-gray-500 hover:text-gray-900 font-medium transition-colors">
-        <ArrowLeft className="w-4 h-4 mr-2" /> Back to Browse
+      <Link
+        to="/posts"
+        className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 font-medium transition-colors text-sm"
+      >
+        <ArrowLeft className="w-4 h-4" /> Back to Browse
       </Link>
-      
-      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-8 items-start">
-        
-        {/* LEFT COLUMN */}
-        <div className="lg:col-span-2 w-full order-1">
-          {/* Image Gallery */}
-          <div className="mb-6">
+
+      {/* Two-column layout on desktop */}
+      <div className="flex flex-col lg:grid lg:grid-cols-5 gap-8 items-start">
+
+        {/* LEFT — Image + body content (3/5) */}
+        <div className="lg:col-span-3 w-full space-y-6">
+
+          {/* Image */}
+          <div className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-100">
             {post.imageUrls && post.imageUrls.length > 0 ? (
-              <img src={post.imageUrls[0]} alt="Post Cover" className="w-full h-56 md:h-72 object-cover rounded-xl shadow-sm border border-gray-100" />
+              <img
+                src={post.imageUrls[0]}
+                alt="Post Cover"
+                className="w-full h-64 md:h-80 object-cover"
+              />
             ) : (
-              <div className="w-full h-56 md:h-72 bg-gray-100 rounded-xl flex items-center justify-center border border-gray-200">
-                <Camera className="w-16 h-16 text-gray-300" />
+              <div className="w-full h-64 md:h-80 flex items-center justify-center">
+                <Camera className="w-16 h-16 text-slate-300" />
               </div>
             )}
           </div>
 
-          {/* Post Header */}
-          <div className="flex items-center gap-3 mb-3">
-            <span className={`px-2.5 py-1 text-xs font-bold uppercase tracking-wide rounded-md capitalize ${TYPE_COLORS[post.type] || 'bg-gray-100 text-gray-800'}`}>
-              {post.type}
-            </span>
-            <span data-testid="post-status">
-              <PostStatusBadge status={post.status} size="md" />
-            </span>
-          </div>
-          
-          <h1 data-testid="post-title" className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight">
-            {post.title}
-          </h1>
-          
-          <div className="flex flex-wrap items-center gap-5 text-sm font-medium text-gray-600 border-b border-gray-100 pb-6">
-            <div className="flex items-center gap-2"><Tag size={16} className="text-gray-400"/> <span>{post.category}</span></div>
-            <div className="flex items-center gap-2"><MapPin size={16} className="text-gray-400"/> <span>{post.zone}</span></div>
-            <div className="flex items-center gap-2"><Calendar size={16} className="text-gray-400"/> <span>{formattedDate}</span></div>
+          {/* Header */}
+          <div>
+            <div className="flex items-center gap-3 mb-3">
+              <span
+                className={`px-2.5 py-1 text-xs font-bold uppercase tracking-wide rounded-lg capitalize ${
+                  TYPE_COLORS[post.type] || 'bg-gray-100 text-gray-800'
+                }`}
+              >
+                {post.type}
+              </span>
+              <span data-testid="post-status">
+                <PostStatusBadge status={post.status} size="md" />
+              </span>
+            </div>
+
+            <h1 data-testid="post-title" className="text-2xl md:text-3xl font-bold text-slate-900 leading-tight mb-4">
+              {post.title}
+            </h1>
+
+            <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 pb-6 border-b border-slate-100">
+              <span className="flex items-center gap-1.5">
+                <Tag size={15} className="text-slate-400" /> {post.category}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <MapPin size={15} className="text-slate-400" /> {post.zone}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Calendar size={15} className="text-slate-400" /> {formattedDate}
+              </span>
+            </div>
           </div>
 
-          {/* Description — only visible to owner and admin */}
+          {/* Description — owner/admin only */}
           {(isOwner || isAdmin) && (
-            <div className="pt-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">Description</h2>
-              <p className="text-gray-700 whitespace-pre-wrap leading-relaxed text-[15px]">
+            <div>
+              <h2 className="text-base font-semibold text-slate-900 mb-3">Description</h2>
+              <p className="text-slate-700 whitespace-pre-wrap leading-relaxed text-[15px]">
                 {post.description}
               </p>
             </div>
           )}
 
-          {/* Message for non-owners viewing the post */}
           {!isOwner && !isAdmin && (
-            <div className="pt-6">
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-500">
-                🔒 Full description is only visible to the post owner and admin.
-                If this is your item, submit a claim with identifying details below.
-              </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-500">
+              🔒 Full description is only visible to the post owner and admin.
+              If this is your item, submit a claim with identifying details below.
             </div>
           )}
 
-          {/* Claim Button */}
+          {/* Claim button */}
           {canClaim && (
-            <div className="mt-8 pt-6 border-t border-gray-100">
+            <div className="pt-2 border-t border-slate-100">
               {claimSubmitted ? (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-green-800 text-sm font-medium">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-emerald-800 text-sm font-medium">
                   ✅ Your submission has been sent. Admin will review and contact you via email.
                 </div>
               ) : (
                 <button
                   onClick={() => setShowClaimModal(true)}
-                  className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition"
+                  className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition shadow-sm"
                 >
                   {claimButtonText}
                 </button>
@@ -173,29 +189,29 @@ export default function PostDetailPage() {
             </div>
           )}
 
-          {/* Not logged in prompt */}
           {!user && post.status !== 'resolved' && (
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <p className="text-gray-600 text-sm">
-                <Link to="/login" className="text-indigo-600 font-medium hover:underline">Login</Link> to claim this item.
+            <div className="pt-2 border-t border-slate-100">
+              <p className="text-slate-600 text-sm">
+                <Link to="/login" className="text-indigo-600 font-medium hover:underline">Login</Link>{' '}
+                to claim this item.
               </p>
             </div>
           )}
 
-          {/* Owner Actions */}
+          {/* Owner actions */}
           {isOwner && post.status !== 'resolved' && (
-            <div className="mt-10 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center gap-3">
-              <Link 
+            <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
+              <Link
                 data-testid="edit-button"
-                to={`/posts/${id}/edit`} 
-                className="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition w-full sm:w-auto"
+                to={`/posts/${id}/edit`}
+                className="inline-flex justify-center items-center px-4 py-2 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 transition"
               >
                 <Edit2 className="w-4 h-4 mr-2" /> Edit Details
               </Link>
-              <button 
+              <button
                 data-testid="delete-button"
                 onClick={() => setShowDeleteModal(true)}
-                className="inline-flex justify-center items-center px-4 py-2 border border-red-200 rounded-lg text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 transition w-full sm:w-auto"
+                className="inline-flex justify-center items-center px-4 py-2 border border-red-200 rounded-xl text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 transition"
               >
                 <Trash2 className="w-4 h-4 mr-2" /> Remove Post
               </button>
@@ -203,56 +219,47 @@ export default function PostDetailPage() {
           )}
         </div>
 
-        {/* RIGHT COLUMN */}
-        <div className="lg:col-span-1 mt-8 lg:mt-0 w-full order-3 lg:order-2">
-          <div className="lg:sticky lg:top-24 space-y-6">
-            
-            {/* Metadata Card */}
-            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-              <div className="flex justify-between items-center mb-5 pb-5 border-b border-gray-100">
-                <span className="text-sm text-gray-500 font-medium">Date Posted</span>
-                <span className="text-sm font-semibold text-gray-900">{formattedCreated}</span>
+        {/* RIGHT — Timeline + Metadata + Matches (2/5) */}
+        <div className="lg:col-span-2 w-full">
+          <div className="lg:sticky lg:top-24 space-y-5">
+
+            {/* Status Timeline — primary focus */}
+            <ItemStatusTimeline post={post} />
+
+            {/* Metadata card */}
+            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-slate-500 font-medium">Date Posted</span>
+                <span className="font-semibold text-slate-900">{formattedCreated}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500 font-medium">Current Status</span>
+              <div className="flex justify-between items-center text-sm border-t border-slate-100 pt-4">
+                <span className="text-slate-500 font-medium">Current Status</span>
                 <PostStatusBadge status={post.status} size="sm" />
               </div>
 
               {post.status === 'matched' && (
-                <div className="mt-5 bg-amber-50 border border-amber-200 text-amber-800 text-sm p-4 rounded-xl flex items-start gap-3 shadow-sm">
-                  <span className="text-lg leading-none">⚡</span>
+                <div className="mt-2 bg-amber-50 border border-amber-200 text-amber-800 text-sm p-3 rounded-xl flex items-start gap-2">
+                  <span className="text-base leading-none">⚡</span>
                   <span className="font-medium leading-relaxed">A potential match has been found.</span>
                 </div>
               )}
-              
+
               {post.status === 'resolved' && (
-                <div className="mt-5 bg-green-50 border border-green-200 text-green-800 text-sm p-4 rounded-xl flex items-start gap-3 shadow-sm">
-                  <span className="text-lg leading-none">✅</span>
+                <div className="mt-2 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm p-3 rounded-xl flex items-start gap-2">
+                  <span className="text-base leading-none">✅</span>
                   <span className="font-medium leading-relaxed">This item has been successfully recovered.</span>
                 </div>
               )}
             </div>
-            
-            {/* Match Panel — owner and admin only */}
-            <div className="hidden lg:block">
-              {(isOwner || isAdmin) && (
-                <div data-testid="match-panel">
-                  <MatchSuggestionsPanel postId={id} />
-                </div>
-              )}
-            </div>
 
+            {/* Match Panel */}
+            {(isOwner || isAdmin) && (
+              <div data-testid="match-panel">
+                <MatchSuggestionsPanel postId={id} />
+              </div>
+            )}
           </div>
         </div>
-        
-        <div className="w-full order-2 lg:hidden">
-          {(isOwner || isAdmin) && (
-            <div data-testid="match-panel">
-              <MatchSuggestionsPanel postId={id} />
-            </div>
-          )}
-        </div>
-
       </div>
 
       {/* Delete Modal */}
@@ -270,16 +277,15 @@ export default function PostDetailPage() {
 
       {/* Claim Modal */}
       {showClaimModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">{claimButtonText}</h2>
-            <p className="text-gray-500 text-sm mb-6">
-              Provide a private identifying detail to verify your claim. 
-              This will only be visible to the admin — not to the public.
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <h2 className="text-xl font-bold text-slate-900 mb-2">{claimButtonText}</h2>
+            <p className="text-slate-500 text-sm mb-6">
+              Provide a private identifying detail to verify your claim. This will only be visible to the admin.
             </p>
             <form onSubmit={handleClaimSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-slate-700 mb-1">
                   Identifying Detail <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -289,25 +295,25 @@ export default function PostDetailPage() {
                   required
                   placeholder={
                     post.type === 'lost'
-                      ? 'e.g. I found this near the library entrance on Monday morning, it was next to a bench...'
-                      : 'e.g. The watch has my initials R.S. engraved on the back and a scratch on the left strap...'
+                      ? 'e.g. I found this near the library entrance on Monday morning...'
+                      : 'e.g. The watch has my initials R.S. engraved on the back...'
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm resize-none"
+                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm resize-none"
                 />
-                <p className="text-xs text-gray-400 mt-1">{claimDetail.length}/500 characters (min 10)</p>
+                <p className="text-xs text-slate-400 mt-1">{claimDetail.length}/500 characters (min 10)</p>
               </div>
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowClaimModal(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+                  className="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={claimLoading || claimDetail.trim().length < 10}
-                  className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition disabled:opacity-50"
+                  className="flex-1 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition disabled:opacity-50"
                 >
                   {claimLoading ? 'Submitting...' : 'Submit'}
                 </button>
@@ -316,7 +322,6 @@ export default function PostDetailPage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

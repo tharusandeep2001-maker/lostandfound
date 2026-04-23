@@ -27,7 +27,7 @@ export default function PostForm({ onSubmit, defaultValues, isSubmitting, mode =
 
   if (mode === 'edit' && defaultValues?.status === 'resolved') {
     return (
-      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+      <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
         <p className="text-yellow-800 font-medium">
           This post has been resolved and cannot be edited.
         </p>
@@ -39,8 +39,8 @@ export default function PostForm({ onSubmit, defaultValues, isSubmitting, mode =
     onSubmit({ ...data, imageUrls });
   };
 
-  const inputClass = "w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-400";
-  const labelClass = "block text-sm font-medium text-gray-700 mb-1";
+  const inputClass = "w-full border border-slate-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-900 placeholder-gray-400";
+  const labelClass = "block text-sm font-medium text-slate-700 mb-1";
   const errorClass = "text-red-500 text-sm mt-1";
 
   return (
@@ -51,8 +51,8 @@ export default function PostForm({ onSubmit, defaultValues, isSubmitting, mode =
         <label className={labelClass}>Type of Report</label>
         <div className="flex flex-col sm:flex-row gap-4">
           <label 
-            className={`flex-1 border-2 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-              watchedType === 'lost' ? 'border-red-500 bg-red-50 text-red-700' : 'border-gray-200 hover:border-red-200 bg-white'
+            className={`flex-1 border-2 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+              watchedType === 'lost' ? 'border-red-500 bg-red-50 text-red-700' : 'border-slate-200 hover:border-red-200 bg-white'
             }`}
           >
              <input 
@@ -64,13 +64,13 @@ export default function PostForm({ onSubmit, defaultValues, isSubmitting, mode =
                aria-invalid={!!errors.type}
                aria-describedby={errors.type ? "type-error" : undefined}
              />
-             <SearchX className={`w-8 h-8 mb-2 ${watchedType === 'lost' ? 'text-red-600' : 'text-gray-400'}`} />
+             <SearchX className={`w-8 h-8 mb-2 ${watchedType === 'lost' ? 'text-red-600' : 'text-slate-400'}`} />
              <span className="font-medium">I Lost Something</span>
           </label>
           
           <label 
-             className={`flex-1 border-2 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-               watchedType === 'found' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 hover:border-blue-200 bg-white'
+             className={`flex-1 border-2 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+               watchedType === 'found' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 hover:border-blue-200 bg-white'
              }`}
           >
              <input 
@@ -82,7 +82,7 @@ export default function PostForm({ onSubmit, defaultValues, isSubmitting, mode =
                aria-invalid={!!errors.type}
                aria-describedby={errors.type ? "type-error" : undefined}
              />
-             <Search className={`w-8 h-8 mb-2 ${watchedType === 'found' ? 'text-blue-600' : 'text-gray-400'}`} />
+             <Search className={`w-8 h-8 mb-2 ${watchedType === 'found' ? 'text-indigo-600' : 'text-slate-400'}`} />
              <span className="font-medium">I Found Something</span>
           </label>
         </div>
@@ -106,7 +106,7 @@ export default function PostForm({ onSubmit, defaultValues, isSubmitting, mode =
           {errors.title ? (
             <p id="title-error" role="alert" className={errorClass}>{errors.title.message}</p>
           ) : <div />}
-          <span className="text-xs text-gray-400 ml-auto pt-1">{watchedTitle?.length || 0}/120</span>
+          <span className="text-xs text-slate-400 ml-auto pt-1">{watchedTitle?.length || 0}/120</span>
         </div>
       </div>
 
@@ -179,7 +179,7 @@ export default function PostForm({ onSubmit, defaultValues, isSubmitting, mode =
           {errors.description ? (
             <p id="description-error" role="alert" className={errorClass}>{errors.description.message}</p>
           ) : <div />}
-          <span className="text-xs text-gray-400 ml-auto pt-1">{watchedDesc?.length || 0}/1000</span>
+          <span className="text-xs text-slate-400 ml-auto pt-1">{watchedDesc?.length || 0}/1000</span>
         </div>
       </div>
 
@@ -200,7 +200,7 @@ export default function PostForm({ onSubmit, defaultValues, isSubmitting, mode =
           data-testid="submit-button"
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-indigo-700 transition disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isSubmitting && (
             <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">

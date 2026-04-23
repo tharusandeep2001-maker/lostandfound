@@ -36,7 +36,7 @@ export default function PostCreatePage() {
         subtitle="Fill in the details to help others identify your item"
       />
       
-      <div className="bg-white p-6 shadow-sm border border-gray-100 rounded-xl">
+      <div className="bg-white p-6 shadow-sm border border-slate-100 rounded-2xl">
         <PostForm mode="create" onSubmit={handleCreate} isSubmitting={isPending} />
       </div>
     </div>

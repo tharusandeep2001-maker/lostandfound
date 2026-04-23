@@ -66,15 +66,15 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-        <div className="max-w-md w-full bg-white rounded-xl shadow-md p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4">
+        <div className="max-w-md w-full bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center">
           <div className="text-5xl mb-4">📧</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">Check your email!</h2>
-          <p className="text-gray-600 mb-6">
+          <h2 className="text-2xl font-bold text-slate-900 mb-3">Check your email!</h2>
+          <p className="text-slate-600 mb-6">
             We sent a verification link to <strong>{form.email}</strong>. 
             Click the link to activate your account.
           </p>
-          <p className="text-sm text-gray-500 mb-4">Didn't receive it?</p>
+          <p className="text-sm text-slate-500 mb-4">Didn't receive it?</p>
           <button
             onClick={() => navigate('/resend-verification')}
             className="text-indigo-600 font-medium hover:underline text-sm"
@@ -82,7 +82,7 @@ export default function RegisterPage() {
             Resend verification email
           </button>
           <div className="mt-6">
-            <Link to="/login" className="text-sm text-gray-600 hover:underline">
+            <Link to="/login" className="text-sm text-slate-600 hover:underline">
               Back to login
             </Link>
           </div>
@@ -92,10 +92,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-md p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2 text-center">Create Account</h1>
-        <p className="text-gray-500 text-center mb-8">Join CampusLost&Found</p>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4">
+      <div className="max-w-md w-full bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+        <h1 className="text-2xl font-bold text-slate-900">Create Account</h1>
+        <p className="text-slate-500 text-center mb-8">Join CampusLost&Found</p>
 
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
@@ -105,39 +105,39 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
             <input
               type="text"
               name="name"
               value={form.name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition"
               placeholder="Your full name"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
             <input
               type="email"
               name="email"
               value={form.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition"
               placeholder="you@university.lk"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Faculty</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Faculty</label>
             <select
               name="faculty"
               value={form.faculty}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition"
             >
               <option value="">Select your faculty</option>
               {FACULTIES.map((f) => (
@@ -147,27 +147,27 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
             <input
               type="password"
               name="password"
               value={form.password}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition"
               placeholder="At least 6 characters"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Confirm Password</label>
             <input
               type="password"
               name="confirmPassword"
               value={form.confirmPassword}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition"
               placeholder="Re-enter your password"
             />
           </div>
@@ -175,13 +175,13 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 px-4 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50"
+            className="w-full py-2.5 px-4 bg-indigo-600 text-white rounded-xl font-semibold text-sm hover:bg-indigo-700 transition disabled:opacity-50"
           >
             {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-600 mt-6">
+        <p className="text-center text-sm text-slate-600 mt-6">
           Already have an account?{' '}
           <Link to="/login" className="text-indigo-600 font-medium hover:underline">
             Sign in

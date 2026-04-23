@@ -2,7 +2,7 @@ import { STATUS_LABELS, STATUS_COLORS } from '../../utils/constants';
 
 export default function PostStatusBadge({ status, size = 'md' }) {
   const label = STATUS_LABELS[status];
-  const colorClass = STATUS_COLORS[status] || 'bg-gray-100 text-gray-600';
+  const colorClass = STATUS_COLORS[status] || 'bg-slate-100 text-slate-600';
   const sizeClass = size === 'sm' ? 'text-xs px-2 py-0.5' : 'text-sm px-3 py-1';
   
   let dotColor = 'bg-gray-400';

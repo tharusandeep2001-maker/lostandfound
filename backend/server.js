@@ -49,6 +49,7 @@ app.use('/api/admin',   adminRoutes);
 app.use('/api/claims',  claimRoutes);
 app.use('/api/mappins', mapPinRoutes);
 app.use('/api/analytics', require('./routes/analytics'));
+app.use('/api/announcements', require('./routes/announcements'));
 
 // ─── Global Error Handler (must be last) ──────────────────────────────────────
 app.use(errorHandler);

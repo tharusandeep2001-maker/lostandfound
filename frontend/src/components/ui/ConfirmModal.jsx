@@ -33,15 +33,15 @@ export default function ConfirmModal({
         className="bg-white text-left rounded-2xl shadow-xl p-6 max-w-sm w-full"
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 id="modal-title" className="font-bold text-gray-900 text-lg">{title}</h3>
-        <p className="text-sm text-gray-500 mt-2">{message}</p>
+        <h3 id="modal-title" className="font-bold text-slate-900 text-lg">{title}</h3>
+        <p className="text-sm text-slate-500 mt-2">{message}</p>
         
         <div className="mt-6 flex gap-3 justify-end">
           <button
             ref={cancelBtnRef}
             onClick={onCancel}
             disabled={isLoading}
-            className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition"
+            className="bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-200 transition"
           >
             Cancel
           </button>

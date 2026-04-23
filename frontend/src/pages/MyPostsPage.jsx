@@ -28,7 +28,7 @@ export default function MyPostsPage() {
         action={
           <Link 
             to="/posts/new" 
-            className="inline-flex items-center justify-center bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition shadow-sm w-full sm:w-auto"
+            className="inline-flex items-center justify-center bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition shadow-sm w-full sm:w-auto"
           >
             <Plus className="w-5 h-5 mr-1" /> Report New Item
           </Link>
@@ -36,7 +36,7 @@ export default function MyPostsPage() {
       />
 
       {/* Tabs Row */}
-      <div className="border-b border-gray-200 mb-8 overflow-x-auto pb-1">
+      <div className="border-b border-slate-200 mb-8 overflow-x-auto pb-1">
         <nav className="flex space-x-8 sm:space-x-10 min-w-max px-1" aria-label="Tabs">
           {['Active', 'Resolved', 'Removed'].map((tab) => (
             <button
@@ -45,8 +45,8 @@ export default function MyPostsPage() {
               onClick={() => setActiveTab(tab)}
               className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-all shadow-sm ${
                 activeTab === tab
-                  ? 'border-blue-600 text-blue-700'
-                  : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300 shadow-none'
+                  ? 'border-indigo-600 text-indigo-700'
+                  : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-200 shadow-none'
               }`}
             >
               {tab}
@@ -63,14 +63,14 @@ export default function MyPostsPage() {
            ))}
         </div>
       ) : filteredPosts.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm max-w-2xl mx-auto">
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm max-w-2xl mx-auto">
           {activeTab === 'Active' ? (
             <EmptyState 
               icon={Inbox} 
               title="No posts yet" 
               subtitle="You have not reported any items" 
               action={
-                <Link to="/posts/new" className="inline-flex justify-center bg-blue-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition shadow-sm">
+                <Link to="/posts/new" className="inline-flex justify-center bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition shadow-sm">
                   Report your first item
                 </Link>
               } 

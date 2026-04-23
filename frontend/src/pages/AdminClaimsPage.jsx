@@ -87,10 +87,10 @@ export default function AdminClaimsPage() {
     <div className="max-w-5xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <Link to="/admin" className="text-gray-500 hover:text-gray-700">
+        <Link to="/admin" className="text-slate-500 hover:text-slate-700">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Manage Claims</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Manage Claims</h1>
         <span className="ml-auto bg-indigo-100 text-indigo-700 text-sm font-medium px-3 py-1 rounded-full">
           {claims.length} claims
         </span>
@@ -105,7 +105,7 @@ export default function AdminClaimsPage() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
               filter === s
                 ? 'bg-indigo-600 text-white'
-                : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
             }`}
           >
             {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -118,13 +118,13 @@ export default function AdminClaimsPage() {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
         </div>
       ) : claims.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl border border-gray-200 text-gray-500">
+        <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 text-slate-500">
           No {filter} claims.
         </div>
       ) : (
         <div className="space-y-6">
           {claims.map((claim) => (
-            <div key={claim._id} className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+            <div key={claim._id} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
               
               {/* Header row */}
               <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
@@ -136,12 +136,12 @@ export default function AdminClaimsPage() {
                     <MatchScoreBadge score={matchScores[claim._id]} />
                   )}
                   {matchScores[claim._id] === null && (
-                    <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-500">
+                    <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-500">
                       No system match found
                     </span>
                   )}
                 </div>
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-slate-400">
                   Submitted {new Date(claim.createdAt).toLocaleDateString('en-GB')}
                 </span>
               </div>
@@ -156,11 +156,11 @@ export default function AdminClaimsPage() {
                   </h3>
                   <Link
                     to={`/posts/${claim.postId?._id}`}
-                    className="font-semibold text-gray-900 hover:text-indigo-600 transition block mb-2"
+                    className="font-semibold text-slate-900 hover:text-indigo-600 transition block mb-2"
                   >
                     {claim.postId?.title}
                   </Link>
-                  <div className="space-y-1.5 text-sm text-gray-600">
+                  <div className="space-y-1.5 text-sm text-slate-600">
                     <div className="flex justify-between">
                       <span className="font-medium">Type</span>
                       <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
@@ -187,8 +187,8 @@ export default function AdminClaimsPage() {
                   <h3 className="text-xs font-bold text-purple-600 uppercase mb-3">
                     👤 Claimant
                   </h3>
-                  <p className="font-semibold text-gray-900 mb-2">{claim.claimantId?.name}</p>
-                  <div className="space-y-1.5 text-sm text-gray-600">
+                  <p className="font-semibold text-slate-900 mb-2">{claim.claimantId?.name}</p>
+                  <div className="space-y-1.5 text-sm text-slate-600">
                     <div className="flex justify-between">
                       <span className="font-medium">Email</span>
                       <span className="text-xs">{claim.claimantId?.email}</span>
@@ -206,7 +206,7 @@ export default function AdminClaimsPage() {
                 <h3 className="text-xs font-bold text-indigo-700 uppercase mb-2">
                   🔒 Private Identifying Detail
                 </h3>
-                <p className="text-sm text-gray-800">{claim.identifyingDetail}</p>
+                <p className="text-sm text-slate-800">{claim.identifyingDetail}</p>
               </div>
 
               {/* Match score explanation */}
@@ -220,7 +220,7 @@ export default function AdminClaimsPage() {
               {claim.status === 'pending' && (
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
                       Note to both parties (optional)
                     </label>
                     <input
@@ -228,7 +228,7 @@ export default function AdminClaimsPage() {
                       placeholder="e.g. Please come to the admin office with your student ID..."
                       value={adminNote[claim._id] || ''}
                       onChange={(e) => setAdminNote({ ...adminNote, [claim._id]: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </div>
                   <div className="flex gap-3">
@@ -252,7 +252,7 @@ export default function AdminClaimsPage() {
 
               {/* Show admin note if already reviewed */}
               {claim.status !== 'pending' && claim.adminNote && (
-                <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600">
+                <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-600">
                   <span className="font-medium">Admin note: </span>{claim.adminNote}
                 </div>
               )}

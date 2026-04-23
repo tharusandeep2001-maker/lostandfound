@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
 // Contexts & Layout
 import { AuthProvider } from './contexts/AuthContext';
-import Navbar from './components/layout/Navbar';
+import AppLayout from './components/layout/AppLayout';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import AdminRoute from './components/layout/AdminRoute';
 
@@ -21,6 +21,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminPostsPage from './pages/AdminPostsPage';
+import AdminAnnouncementsPage from './pages/AdminAnnouncementsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import MyClaimsPage from './pages/MyClaimsPage';
 import AdminClaimsPage from './pages/AdminClaimsPage';
@@ -36,23 +37,21 @@ const queryClient = new QueryClient({
   },
 });
 
-function AppLayout() {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <Outlet />
-      </main>
-    </div>
-  );
-}
-
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BrowserRouter>
-          <Toaster position="top-right" />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: '500',
+              },
+            }}
+          />
           <Routes>
             <Route element={<AppLayout />}>
 
@@ -82,6 +81,7 @@ function App() {
                 <Route path="/admin/claims" element={<AdminClaimsPage />} />
                 <Route path="/admin/heatmap" element={<AdminHeatmapPage />} />
                 <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
+                <Route path="/admin/announcements" element={<AdminAnnouncementsPage />} />
               </Route>
 
               {/* 404 */}

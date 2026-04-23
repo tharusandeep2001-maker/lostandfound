@@ -83,10 +83,10 @@ function BreakdownRow({ icon: Icon, label, earned, max, reason }) {
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <Icon size={12} className="text-gray-400 flex-shrink-0" />
-          <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">{label}</span>
+          <Icon size={12} className="text-slate-400 flex-shrink-0" />
+          <span className="text-xs font-semibold text-slate-700 uppercase tracking-wide">{label}</span>
         </div>
-        <p className="text-xs text-gray-500 leading-tight mt-0.5">{reason}</p>
+        <p className="text-xs text-slate-500 leading-tight mt-0.5">{reason}</p>
       </div>
 
       <div className="flex-shrink-0 flex flex-col items-end gap-1">
@@ -97,7 +97,7 @@ function BreakdownRow({ icon: Icon, label, earned, max, reason }) {
         }`}>
           {hit ? '+' : ''}{earned} / {max}
         </span>
-        <div className="w-20 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+        <div className="w-20 h-1.5 rounded-full bg-slate-100 overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-500 ${hit ? 'bg-emerald-400' : 'bg-red-300'}`}
             style={{ width: `${pct}%` }}
@@ -123,7 +123,7 @@ function MatchTags({ breakdown }) {
   if (tags.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-100">
+    <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-slate-100">
       {tags.map(({ label, color }) => (
         <span key={label} className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ring-1 ${color}`}>
           ✓ {label}
@@ -149,22 +149,22 @@ export default function MatchCard({ postId, matchedPostId, score, breakdown, mat
     (breakdown.dateScore     ?? 0);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-blue-300 hover:shadow-md transition-all duration-200">
+    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-300 hover:shadow-md transition-all duration-200">
 
       {/* ── Top strip: thumbnail + title + score ring ─────────────────────── */}
       <div className="flex gap-4 p-4 pb-3">
-        <div className="w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center">
+        <div className="w-16 h-16 flex-shrink-0 rounded-2xl overflow-hidden bg-slate-100 flex items-center justify-center">
           {snap.imageUrls?.length > 0
             ? <img src={snap.imageUrls[0]} alt="thumbnail" className="w-full h-full object-cover" />
-            : <Camera className="text-gray-300 w-6 h-6" />
+            : <Camera className="text-slate-300 w-6 h-6" />
           }
         </div>
 
         <div className="flex-1 min-w-0 self-center">
-          <h4 className="font-semibold text-gray-900 text-sm leading-snug truncate">
+          <h4 className="font-semibold text-slate-900 text-sm leading-snug truncate">
             {snap.title ?? 'Untitled post'}
           </h4>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs text-gray-400">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs text-slate-400">
             {snap.category && (
               <span className="flex items-center gap-1"><Tag size={11} />{snap.category}</span>
             )}
@@ -179,16 +179,16 @@ export default function MatchCard({ postId, matchedPostId, score, breakdown, mat
       </div>
 
       {/* ── Section divider ──────────────────────────────────────────────── */}
-      <div className="mx-4 border-t border-dashed border-gray-100" />
+      <div className="mx-4 border-t border-dashed border-slate-100" />
 
       {/* ── Breakdown header ──────────────────────────────────────────────── */}
       <div className="px-4 pt-3 pb-1 flex items-center justify-between">
-        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
           Score Breakdown
         </span>
-        <span className="text-xs text-gray-400">
-          <span className="font-bold text-gray-700">{totalEarned}</span>
-          <span className="text-gray-300"> / 100 pts</span>
+        <span className="text-xs text-slate-400">
+          <span className="font-bold text-slate-700">{totalEarned}</span>
+          <span className="text-slate-300"> / 100 pts</span>
         </span>
       </div>
 
@@ -220,7 +220,7 @@ export default function MatchCard({ postId, matchedPostId, score, breakdown, mat
       </div>
 
       {/* ── CTA footer ───────────────────────────────────────────────────── */}
-      <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+      <div className="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
         <Link
           to={`/posts/${matchedPostId}`}
           className="text-xs text-blue-600 hover:text-blue-800 font-medium hover:underline"

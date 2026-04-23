@@ -14,7 +14,7 @@ export default function PostEditPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-24">
-        <svg className="animate-spin h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24">
+        <svg className="animate-spin h-10 w-10 text-indigo-600" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
         </svg>
@@ -24,9 +24,9 @@ export default function PostEditPage() {
 
   if (isError || !post) {
     return (
-      <div className="text-center py-20 bg-gray-50 rounded-xl mt-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Post not found</h2>
-        <Link to="/posts" className="text-blue-600 hover:underline">&larr; Back to Browse</Link>
+      <div className="text-center py-20 bg-slate-50 rounded-2xl mt-8">
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">Post not found</h2>
+        <Link to="/posts" className="text-indigo-600 hover:underline">&larr; Back to Browse</Link>
       </div>
     );
   }
@@ -43,7 +43,7 @@ export default function PostEditPage() {
 
   return (
     <div className="max-w-2xl mx-auto py-8">
-      <Link to={`/posts/${id}`} className="text-blue-600 hover:text-blue-800 text-sm mb-4 inline-block font-medium">
+      <Link to={`/posts/${id}`} className="text-indigo-600 hover:text-indigo-800 text-sm mb-4 inline-block font-medium">
         &larr; Back to Post Details
       </Link>
       
@@ -52,7 +52,7 @@ export default function PostEditPage() {
         subtitle="Update the details of your recovered or lost item."
       />
       
-      <div className="bg-white p-6 shadow-sm border border-gray-100 rounded-xl">
+      <div className="bg-white p-6 shadow-sm border border-slate-100 rounded-2xl">
         <PostForm mode="edit" defaultValues={post} onSubmit={handleEdit} isSubmitting={isPending} />
       </div>
     </div>

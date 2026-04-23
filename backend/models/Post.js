@@ -97,6 +97,16 @@ const PostSchema = new Schema(
       type: Date,
       default: null,
     },
+
+    claimedAt: {
+      type: Date,
+      default: null,
+    },
+
+    resolvedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true, versionKey: false }
 );

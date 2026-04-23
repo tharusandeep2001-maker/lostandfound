@@ -53,6 +53,8 @@ router.post('/', verifyToken, async (req, res, next) => {
       identifyingDetail: identifyingDetail.trim(),
     });
 
+    // Stamp claimedAt for the status timeline
+    await Post.findByIdAndUpdate(postId, { claimedAt: new Date() });
     // get claimant details for email
     const claimant = await User.findById(claimantId).select('name email');
 
@@ -173,7 +175,7 @@ router.patch('/:id', verifyToken, adminOnly, async (req, res, next) => {
 
     // if approved update post status to resolved
     if (status === 'approved') {
-      await Post.findByIdAndUpdate(claim.postId._id, { status: 'resolved' });
+      await Post.findByIdAndUpdate(claim.postId._id, { status: 'resolved', resolvedAt: new Date() });
     }
 
     // send email to claimant

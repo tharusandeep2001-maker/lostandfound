@@ -58,37 +58,37 @@ export default function AdminPostsPage() {
     <div className="max-w-5xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <Link to="/admin" className="text-gray-500 hover:text-gray-700">
+        <Link to="/admin" className="text-slate-500 hover:text-slate-700">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Manage Posts</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Manage Posts</h1>
         <span className="ml-auto bg-indigo-100 text-indigo-700 text-sm font-medium px-3 py-1 rounded-full">
           {posts.length} posts
         </span>
       </div>
 
       {posts.length === 0 ? (
-        <div className="text-center py-16 text-gray-500">No posts yet.</div>
+        <div className="text-center py-16 text-slate-500">No posts yet.</div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Title</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Type</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Category</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Zone</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase">Title</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase">Type</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase">Category</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase">Zone</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase">Status</th>
+                <th className="text-right px-6 py-3 text-xs font-medium text-slate-500 uppercase">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-slate-100">
               {posts.map((post) => (
-                <tr key={post._id} className="hover:bg-gray-50 transition">
+                <tr key={post._id} className="hover:bg-slate-50 transition">
                   <td className="px-6 py-4">
                     <Link
                       to={`/posts/${post._id}`}
-                      className="font-medium text-gray-900 hover:text-indigo-600 transition"
+                      className="font-medium text-slate-900 hover:text-indigo-600 transition"
                     >
                       {post.title}
                     </Link>
@@ -102,8 +102,8 @@ export default function AdminPostsPage() {
                       {post.type}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-gray-500 text-sm">{post.category}</td>
-                  <td className="px-6 py-4 text-gray-500 text-sm">{post.zone}</td>
+                  <td className="px-6 py-4 text-slate-500 text-sm">{post.category}</td>
+                  <td className="px-6 py-4 text-slate-500 text-sm">{post.zone}</td>
                   <td className="px-6 py-4">
                     <PostStatusBadge status={post.status} />
                   </td>
@@ -120,7 +120,7 @@ export default function AdminPostsPage() {
                         </button>
                       ))}
                       {VALID_TRANSITIONS[post.status]?.length === 0 && (
-                        <span className="text-xs text-gray-400">No actions</span>
+                        <span className="text-xs text-slate-400">No actions</span>
                       )}
                     </div>
                   </td>
