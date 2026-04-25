@@ -15,7 +15,7 @@ const getMatchesForPost = async (req, res) => {
     return res.status(404).json({ message: 'Post not found' });
   }
 
-  const isOwner = post.authorId.toString() === req.user._id;
+  const isOwner = post.authorId.toString() === (req.user.id || req.user._id)?.toString();
   const isAdmin = req.user.role === 'admin';
 
   if (!isOwner && !isAdmin) {

@@ -47,7 +47,7 @@ export default function PostDetailPage() {
   }
 
   const userId = user?.id || user?._id;
-  const isOwner = post.authorId === userId;
+  const isOwner = post.authorId?.toString() === userId?.toString();
   const isAdmin = user?.role === 'admin';
   const isStudent = user && !isAdmin;
   const canClaim = isStudent && !isOwner && post.status !== 'resolved';
