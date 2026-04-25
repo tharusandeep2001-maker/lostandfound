@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { MapPin, Tag, Calendar, Edit2, Trash2, ArrowLeft, Camera } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -22,7 +22,8 @@ export default function PostDetailPage() {
   const { mutateAsync: deletePost, isPending: isDeleting } = useDeletePost();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showClaimModal, setShowClaimModal] = useState(false);
+  const location = useLocation();
+const [showClaimModal, setShowClaimModal] = useState(location.state?.openClaim === true);
   const [claimDetail, setClaimDetail] = useState('');
   const [claimLoading, setClaimLoading] = useState(false);
   const [claimSubmitted, setClaimSubmitted] = useState(false);

@@ -220,27 +220,21 @@ export default function MatchCard({ postId, matchedPostId, score, breakdown, mat
       </div>
 
       {/* ── CTA footer ───────────────────────────────────────────────────── */}
-      <div className="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-        <Link
-          to={`/posts/${matchedPostId}`}
-          className="text-xs text-blue-600 hover:text-blue-800 font-medium hover:underline"
-        >
-          View post →
-        </Link>
-        <button
-          onClick={() =>
-            import('react-hot-toast').then(({ default: toast }) =>
-              toast(
-                'Claims Module is currently under active development. Keep an eye out for our upcoming Week 11 integration update!',
-                { icon: '🚧' }
-              )
-            )
-          }
-          className="text-xs font-semibold bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 active:scale-95 transition-all"
-        >
-          Submit Claim →
-        </button>
-      </div>
+<div className="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+  <Link
+    to={`/posts/${matchedPostId}`}
+    className="text-xs text-blue-600 hover:text-blue-800 font-medium hover:underline"
+  >
+    View post →
+  </Link>
+  <Link
+    to={`/posts/${matchedPostId}`}
+    state={{ openClaim: true }}
+    className="text-xs font-semibold bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 active:scale-95 transition-all"
+  >
+    Submit Claim →
+  </Link>
+</div>
     </div>
   );
 }
