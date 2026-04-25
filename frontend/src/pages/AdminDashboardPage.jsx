@@ -2,67 +2,24 @@ import { Link } from 'react-router-dom';
 import {
   Users, FileText, ClipboardList, ShieldCheck,
   MapPin, BarChart2, Megaphone, TrendingUp,
-  Activity, Clock,
+  Activity, ArrowRight,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const CARDS = [
-  {
-    title: 'Manage Users',
-    description: 'View all registered students, ban or remove accounts.',
-    icon: Users,
-    link: '/admin/users',
-    accent: 'bg-blue-500',
-    hint: 'User accounts',
-  },
-  {
-    title: 'Manage Posts',
-    description: 'View all lost and found posts, update their status.',
-    icon: FileText,
-    link: '/admin/posts',
-    accent: 'bg-emerald-500',
-    hint: 'All submissions',
-  },
-  {
-    title: 'Manage Claims',
-    description: 'Review pending claims, approve or reject with email notification.',
-    icon: ClipboardList,
-    link: '/admin/claims',
-    accent: 'bg-violet-500',
-    hint: 'Pending review',
-  },
-  {
-    title: 'Announcements',
-    description: 'Broadcast messages to all users via banner and email.',
-    icon: Megaphone,
-    link: '/admin/announcements',
-    accent: 'bg-indigo-500',
-    hint: 'Broadcast channel',
-  },
-  {
-    title: 'Campus Heatmap',
-    description: 'Tag lost & found posts on floor maps and view density heatmaps.',
-    icon: MapPin,
-    link: '/admin/heatmap',
-    accent: 'bg-orange-500',
-    hint: 'Location intelligence',
-  },
-  {
-    title: 'Analytics',
-    description: 'Trends, zone hotspots, category recovery rates and engagement.',
-    icon: BarChart2,
-    link: '/admin/analytics',
-    accent: 'bg-rose-500',
-    hint: 'Platform insights',
-  },
+  { title: 'Users', description: 'View, ban, or remove student accounts.', icon: Users, link: '/admin/users', gradient: 'from-blue-500 to-cyan-400' },
+  { title: 'Posts', description: 'Manage all lost and found submissions.', icon: FileText, link: '/admin/posts', gradient: 'from-emerald-500 to-teal-400' },
+  { title: 'Claims', description: 'Review, approve or reject pending claims.', icon: ClipboardList, link: '/admin/claims', gradient: 'from-violet-500 to-purple-400' },
+  { title: 'Announce', description: 'Broadcast messages to all users.', icon: Megaphone, link: '/admin/announcements', gradient: 'from-indigo-500 to-blue-400' },
+  { title: 'Heatmap', description: 'Visualise where items are lost most often.', icon: MapPin, link: '/admin/heatmap', gradient: 'from-orange-500 to-amber-400' },
+  { title: 'Analytics', description: 'Recovery rates, trends, category insights.', icon: BarChart2, link: '/admin/analytics', gradient: 'from-rose-500 to-pink-400' },
 ];
 
-// Stat bar items — static labels; in a real app these would come from an API
 const STATS = [
-  { label: 'Total Posts', value: '—', icon: FileText, color: 'text-emerald-600' },
-  { label: 'Open Claims', value: '—', icon: ClipboardList, color: 'text-violet-600' },
-  { label: 'Resolved (7d)', value: '—', icon: TrendingUp, color: 'text-indigo-600' },
-  { label: 'Active Users', value: '—', icon: Activity, color: 'text-orange-500' },
+  { label: 'Total Posts', icon: FileText, gradient: 'from-emerald-400 to-teal-300' },
+  { label: 'Open Claims', icon: ClipboardList, gradient: 'from-violet-400 to-purple-300' },
+  { label: 'Resolved 7d', icon: TrendingUp, gradient: 'from-indigo-400 to-blue-300' },
+  { label: 'Active Users', icon: Activity, gradient: 'from-orange-400 to-amber-300' },
 ];
 
 export default function AdminDashboardPage() {
@@ -71,59 +28,70 @@ export default function AdminDashboardPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-8">
 
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center">
-          <ShieldCheck className="w-6 h-6 text-indigo-600" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Admin Dashboard</h1>
-          <p className="text-slate-500 text-sm">Welcome back, {user?.name}</p>
+      {/* ── Hero header ─────────────────────────────────────────────────────── */}
+      <div className="relative rounded-3xl overflow-hidden px-8 py-9"
+        style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%)' }}
+      >
+        <div className="absolute -top-8 -right-8 w-48 h-48 bg-white/5 rounded-full" />
+        <div className="absolute bottom-0 left-32 w-28 h-28 bg-white/5 rounded-full" />
+        <div className="relative z-10 flex items-center gap-4">
+          <div className="w-14 h-14 bg-white/10 border border-white/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <ShieldCheck className="w-7 h-7 text-white" />
+          </div>
+          <div>
+            <p className="text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-0.5">Admin Control Panel</p>
+            <h1 className="text-2xl font-extrabold text-white"
+              style={{ fontFamily: "'Syne', sans-serif" }}
+            >
+              Good to see you, {user?.name?.split(' ')[0]} 👋
+            </h1>
+          </div>
         </div>
       </div>
 
-      {/* KPI stat bar */}
+      {/* ── KPI stat row ─────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {STATS.map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-            <div className="flex items-center gap-2 mb-2">
-              <Icon className={`w-4 h-4 ${color}`} />
-              <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">{label}</span>
+        {STATS.map(({ label, icon: Icon, gradient }) => (
+          <div key={label} className="bg-white rounded-2xl p-5 relative overflow-hidden"
+            style={{ border: '1px solid #e8edf4', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}
+          >
+            {/* Large faded icon watermark */}
+            <div className={`absolute -bottom-3 -right-3 w-20 h-20 bg-gradient-to-br ${gradient} rounded-full opacity-10`} />
+            <div className={`w-9 h-9 bg-gradient-to-br ${gradient} rounded-xl flex items-center justify-center mb-3 shadow-sm`}>
+              <Icon className="w-4 h-4 text-white" />
             </div>
-            <p className="text-2xl font-bold text-slate-800">{value}</p>
+            <p className="text-2xl font-extrabold text-slate-900"
+              style={{ fontFamily: "'Syne', sans-serif" }}
+            >—</p>
+            <p className="text-xs font-semibold text-slate-400 mt-0.5">{label}</p>
           </div>
         ))}
       </div>
 
-      {/* Management cards grid */}
+      {/* ── Management cards ──────────────────────────────────────────────────── */}
       <div>
-        <div className="flex items-center gap-2 mb-4">
-          <Clock className="w-4 h-4 text-slate-400" />
-          <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Management</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {CARDS.map((card) => (
+        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 px-1">Management</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {CARDS.map(card => (
             <Link
               key={card.title}
               to={card.link}
-              className="group bg-white rounded-2xl border border-slate-200 p-5 hover:border-indigo-200 hover:shadow-md transition-all duration-200"
+              className="group bg-white rounded-2xl p-5 flex items-start gap-4 transition-all"
+              style={{ border: '1px solid #e8edf4', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(79,70,229,0.12)'; e.currentTarget.style.borderColor = '#c7d2fe'; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)'; e.currentTarget.style.borderColor = '#e8edf4'; }}
             >
-              <div className="flex items-start gap-4">
-                <div className={`flex-shrink-0 w-10 h-10 ${card.accent} rounded-xl flex items-center justify-center`}>
-                  <card.icon className="w-5 h-5 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h2 className="font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors text-sm">
-                    {card.title}
-                  </h2>
-                  <p className="text-slate-400 text-xs mt-0.5 line-clamp-2">{card.description}</p>
-                </div>
+              <div className={`w-11 h-11 bg-gradient-to-br ${card.gradient} rounded-xl flex items-center justify-center flex-shrink-0 shadow-md`}>
+                <card.icon className="w-5 h-5 text-white" />
               </div>
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-xs text-slate-400">{card.hint}</span>
-                <span className="text-xs font-medium text-indigo-500 group-hover:text-indigo-700 transition-colors">
-                  Open →
-                </span>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-slate-900 text-sm group-hover:text-indigo-600 transition-colors">
+                  {card.title}
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">{card.description}</p>
+                <div className="flex items-center gap-1 mt-3 text-xs font-bold text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Open <ArrowRight className="w-3 h-3" />
+                </div>
               </div>
             </Link>
           ))}
